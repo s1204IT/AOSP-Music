@@ -36,4 +36,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    lint {
+        baseline = file("lint-baseline.xml")
+    }
+
+    sourceSets {
+        main {
+            aidl.srcDirs = ["src/main/java/com/android/music"]
+        }
+    }
 }
