@@ -27,6 +27,7 @@
 
     <application android:icon="@drawable/app_music"
         android:label="@string/musicbrowserlabel"
+        android:appCategory="audio"
         android:taskAffinity="android.task.music"
         android:allowTaskReparenting="true"
         android:usesCleartextTraffic="true">
