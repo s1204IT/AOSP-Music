@@ -6,6 +6,7 @@
 /.idea/
 # Gradle Build
 /app/build/
+/app/lint-baseline.xml
 # Android Studio Signing APK
 /app/debug/
 /app/release/
