@@ -10,12 +10,6 @@ on:
       - 'gradle/wrapper/gradle-wrapper.properties'
       - '*.gradle'
   workflow_dispatch:
-    inputs:
-      release:
-        description: 'Release'
-        type: boolean
-        required: true
-        default: false
 
 jobs:
   build:
@@ -30,26 +24,24 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '11'
-          cache: 'gradle'
+          java-version: '8'
 
-      - name: Build
-        run: | 
-          ./gradlew assembleRelease -q
+     - name: Cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches/
+            ~/.gradle/wrapper/
+          key: ${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+
+      - name: Build with Gradle
+        run: |
+          ./gradlew aR
           echo "version=$(grep versionName app/build.gradle | awk '{print $2}' | tr -d \")" >> $GITHUB_ENV
-          echo "commit=$(echo ${{ github.sha }} | cut -c 1-7)" >> $GITHUB_ENV
+          echo "commit=$(echo ${{ github.sha }} | cut -c-7)" >> $GITHUB_ENV
 
       - name: Upload APK
         uses: actions/upload-artifact@v3
         with:
           name: Music (${{ env.version }}@${{ env.commit }})
           path: app/build/outputs/apk/release/app-release.apk
-
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        if: github.event.inputs.release == 'true'
-        with:
-          tag_name: ${{ env.version }}
-          draft: true
-          prerelease: false
-          files: app/build/outputs/apk/release/app-release.apk
